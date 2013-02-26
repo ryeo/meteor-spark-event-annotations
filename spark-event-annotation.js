@@ -6,103 +6,29 @@ if (Meteor.isClient) {
   function printAnnotations (fn) {
     var r = new Spark._Renderer;
     var annotatedHtml = Spark._currentRenderer.withValue(r, fn);
-    logWithColor("Annotated Html: ", "black");
-    console.log(annotatedHtml);
+    logWithColor("Annotated Html: ", "red");
+    logWithColor(annotatedHtml, "green");
   }
 
-  function printGreetingButtonAnnotations () {
-    printAnnotations(Template.greetingButton);
+  function htmlFunc () {
+    return "<button>Click Me!</button>";
   }
 
-  function renderGreetingButton () {
-    Session.set("buttonText", "Click Me!");
-    document.body.appendChild(Spark.render(Template.greetingButton));
+  function template () {
+    return Spark.attachEvents({
+      "click button": function (e, tmpl) {
+        logWithColor("click event: " + e, "blue");
+      }
+    }, htmlFunc());
   }
 
-  function wrapWithLogger (msg, method, obj, color) {
-    obj = obj || window;
-    color = color || "blue";
-    var fn = obj[method];
-
-    obj[method] = function () {
-      var strArgs = _.chain(arguments)
-        .toArray(arguments)
-        .map(function (arg) {
-          if (_.isFunction(arg)) {
-            var fnName = arg.name || "fn";
-            return fnName + "() {...}";
-          }
-          else if (_.isObject(arg))
-            return "{...}";
-          else
-            return JSON.stringify(arg);
-        })
-        .value()
-        .join(", ");
-      logWithColor(msg + "(" + strArgs + ")", color);
-      return fn && fn.apply(this, arguments);
-    };
-    
-    // copy over function properties
-    _.extend(obj[method], fn);
+  function appendTemplateToBody () {
+    document.body.appendChild(Spark.render(template));
   }
 
-  Template.greetingButton.helpers({
-    buttonText: function () {
-      return Session.get("buttonText");
-    }
-  });
+  function printTemplateAnnotations () {
+    printAnnotations(template);
+  }
 
-  Template.greetingButton.events({
-    "click button": function (e, tmpl) {
-      logWithColor("click button event " + e, "blue");
-    }
-  });
-
-  wrapWithLogger(
-    "Spark.attachEvents",
-    "attachEvents",
-    Spark,
-    "blue"
-  );
-
-  wrapWithLogger(
-    "Spark.isolate",
-    "isolate",
-    Spark,
-    "darkblue"
-  );
-
-  wrapWithLogger(
-    "Template.greetingButton.rendered",
-    "rendered",
-    Template.greetingButton,
-    "green"
-  );
-
-  wrapWithLogger(
-    "UniversalEventListener.prototype.installHandler",
-    "installHandler",
-    UniversalEventListener.prototype,
-    "orange"
-  );
-
-  wrapWithLogger(
-    "UniversalEventListener.prototype.addType",
-    "addType",
-    UniversalEventListener.prototype,
-    "gray"
-  );
-
-  wrapWithLogger(
-    "Template.greetingButton",
-    "greetingButton",
-    Template,
-    "black"
-  );
-
-
-  wrapWithLogger("Meteor.startup", "startup", Meteor, "purple");
-
-  Meteor.startup(renderGreetingButton);
+  Meteor.startup(printTemplateAnnotations);
 }
