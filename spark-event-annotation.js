@@ -47,6 +47,53 @@ if (Meteor.isClient) {
     _.extend(obj[method], fn);
   }
 
+  function showLogger () {
+    wrapWithLogger(
+      "Spark.attachEvents",
+      "attachEvents",
+      Spark,
+      "blue"
+    );
+
+    wrapWithLogger(
+      "Spark.isolate",
+      "isolate",
+      Spark,
+      "darkblue"
+    );
+
+    wrapWithLogger(
+      "Template.greetingButton.rendered",
+      "rendered",
+      Template.greetingButton,
+      "green"
+    );
+
+    wrapWithLogger(
+      "UniversalEventListener.prototype.installHandler",
+      "installHandler",
+      UniversalEventListener.prototype,
+      "orange"
+    );
+
+    wrapWithLogger(
+      "UniversalEventListener.prototype.addType",
+      "addType",
+      UniversalEventListener.prototype,
+      "gray"
+    );
+
+    wrapWithLogger(
+      "Template.greetingButton",
+      "greetingButton",
+      Template,
+      "black"
+    );
+
+
+    wrapWithLogger("Meteor.startup", "startup", Meteor, "purple");
+  }
+
   Template.greetingButton.helpers({
     buttonText: function () {
       return Session.get("buttonText");
@@ -59,50 +106,6 @@ if (Meteor.isClient) {
     }
   });
 
-  wrapWithLogger(
-    "Spark.attachEvents",
-    "attachEvents",
-    Spark,
-    "blue"
-  );
-
-  wrapWithLogger(
-    "Spark.isolate",
-    "isolate",
-    Spark,
-    "darkblue"
-  );
-
-  wrapWithLogger(
-    "Template.greetingButton.rendered",
-    "rendered",
-    Template.greetingButton,
-    "green"
-  );
-
-  wrapWithLogger(
-    "UniversalEventListener.prototype.installHandler",
-    "installHandler",
-    UniversalEventListener.prototype,
-    "orange"
-  );
-
-  wrapWithLogger(
-    "UniversalEventListener.prototype.addType",
-    "addType",
-    UniversalEventListener.prototype,
-    "gray"
-  );
-
-  wrapWithLogger(
-    "Template.greetingButton",
-    "greetingButton",
-    Template,
-    "black"
-  );
-
-
-  wrapWithLogger("Meteor.startup", "startup", Meteor, "purple");
-
+  showLogger();
   Meteor.startup(renderGreetingButton);
 }
