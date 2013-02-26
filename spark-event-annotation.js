@@ -10,18 +10,6 @@ if (Meteor.isClient) {
     logWithColor(annotatedHtml, "green");
   }
 
-  function htmlFunc () {
-    return "<button>Click Me!</button>";
-  }
-
-  function template () {
-    return Spark.attachEvents({
-      "click button": function (e, tmpl) {
-        logWithColor("click event: " + e, "blue");
-      }
-    }, htmlFunc());
-  }
-
   function appendTemplateToBody () {
     document.body.appendChild(Spark.render(template));
   }
@@ -30,5 +18,19 @@ if (Meteor.isClient) {
     printAnnotations(template);
   }
 
-  Meteor.startup(printTemplateAnnotations);
+  /* Template Functions */
+
+  function htmlFunc () {
+    return "<button>Click Me!</button>";
+  }
+
+  function template () {
+    return Spark.attachEvents({
+      "click button": function (e, tmpl) {
+        console.log("click event handled", e);
+      }
+    }, htmlFunc());
+  }
+
+  Meteor.startup(appendTemplateToBody);
 }
